@@ -1,0 +1,116 @@
+﻿@model CRUD.Models.CustomerModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1>Student List</h1>
+<br />
+<form id="form">
+    <div>
+    <input type="text" class="form-control" id="text" placeholder="Input get date"/>
+    <br />
+    <button type="submit" class="btn btn-info" id="btnGet">Get Date</button>
+    </div>
+</form>
+<br/>
+@{
+    if(TempData["AddStatus"] != null)
+    {
+        int status = Convert.ToInt32(TempData["AddStatus"]);
+        if(status == 1)
+        {
+    <span class="alert alert-success">Add success!</span>
+        }
+        else
+        {
+    <span class="alert alert-danger">Add error!</span>
+        }
+    }
+    if(TempData["UpdateStatus"] != null)
+    {
+        int status = Convert.ToInt32(TempData["UpdateStatus"]);
+        if(status == 1)
+        {
+    <span class="alert alert-success">Update success!</span>
+        }
+        else
+        {
+    <span class="alert alert-danger">Update error!</span>
+        }
+    }
+     if(TempData["DeleteStatus"] != null)
+    {
+        int status = Convert.ToInt32(TempData["DeleteStatus"]);
+        if(status == 1)
+        {
+    <span class="alert alert-success">Delete success!</span>
+        }
+        else
+        {
+    <span class="alert alert-danger">Delete error!</span>
+        }
+    }
+}
+
+<a class="btn btn-success"  asp-action="AddCustomer" asp-controller="Home">Create Customer</a>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Avatar</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(Model.Customers.Count > 0)
+        {
+            foreach (var item in Model.Customers)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>
+                        <img src="@item.Avatar" width="100" height="100">
+                    </td>
+                    <td>
+                        <a asp-action="UpdateCustomer" asp-controller="Home"  asp-route-id="@item.Id" >Update</a> &nbsp; || &nbsp;
+                        <a href="/Home/DeleteCustomer/?Id=@item.Id">Remove</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">No Item</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+         $(function () {
+            $("#btnGet").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "/Home/GetValues?value="+$("#text").val(),
+                    success: function (response) {
+                        alert(response)
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                    },
+                    error: function (response) {
+                        alert(response.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+   
+}
